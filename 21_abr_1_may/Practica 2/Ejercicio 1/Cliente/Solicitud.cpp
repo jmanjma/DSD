@@ -6,9 +6,22 @@ Solicitud::Solicitud() {
     socketlocal = new SocketDatagrama(0);
 }
 
-int Solicitud::doOperation(char *IP, int puerto, int opId, int reqId, char *args) {
+int Solicitud::doOperation(char *IP, int puerto, int opId, int reqId, char *args, bool bandera) {
     int n, id_res;
     struct mensaje msj_enviar, *msj_recibir;
+
+    if (bandera==false) {
+        PaqueteDatagrama paquete_recibir(sizeof(struct mensaje));
+        
+        n = socketlocal->recibeTimeout(paquete_recibir, 2, 500000);
+
+        if (n>-1) {
+            msj_recibir = (struct mensaje*)paquete_recibir.obtieneDatos();
+            memcpy(&id_res, msj_recibir->arguments, sizeof(int));
+            // printf("\t\tRespuesta recibida: %d.\n", id_res);
+            return id_res;
+        }
+    }
 
     msj_enviar.messageType = 0;
     msj_enviar.operationId = opId;
@@ -21,10 +34,8 @@ int Solicitud::doOperation(char *IP, int puerto, int opId, int reqId, char *args
     printf("\n\tDatos enviados \
             \n\t\tIP: %s \
             \n\t\tPuerto: %d \
-            \n\t\tTipo: %d \
             \n\t\tId: %d \
-            \n\t\tOperacion: %d \
-            \n\t\tMensaje: ", paquete_enviar.obtieneDireccion(), paquete_enviar.obtienePuerto(), msj_enviar.messageType, msj_enviar.requestId, msj_enviar.operationId);
+            \n\t\tMensaje: ", paquete_enviar.obtieneDireccion(), paquete_enviar.obtienePuerto(), msj_enviar.requestId);
     struct registro reg;
     memcpy(&reg, (struct registro*)msj_enviar.arguments, sizeof(reg));
     printf("%s%s%s\n", reg.celular, reg.CURP, reg.partido);

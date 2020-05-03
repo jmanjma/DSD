@@ -40,16 +40,25 @@ int main(int argc, char *argv[]) {
     printf("\n\tEmitiendo votos...\n");
 
     int id = 0;
-    sol.doOperation(ip, puerto, 0, id++, argumentos);
+    bool bandera = true;
+    sol.doOperation(ip, puerto, id++, 0, argumentos, bandera);
     while((nbytes = read(file_in, (char*)&reg, sizeof(reg))) == sizeof(reg) && id<=n) {
         bzero(argumentos, 4000);
         memcpy(argumentos, (char*)&reg, sizeof(char)*4000);
-        id_res = sol.doOperation(ip, puerto, 1, id, argumentos);
+        id_res = sol.doOperation(ip, puerto, 1, id, argumentos, bandera);
         printf("\t\tlocal(%d) vs remoto(%d)\n", id, id_res);
-        if (id_res!=id) {
-            printf("inconsistencia! => local(%d) vs remoto(%d)\n", id, id_res);
-            exit(1);
+        if (id_res<id) {
+            lseek(file_in, -34, SEEK_CUR);
+            bandera = false;
+            continue;
         }
+        bandera = true;
+        // if (id_res!=id) {
+        //     lseek(file_in, -34, SEEK_CUR);
+        //     continue;
+        //     // printf("inconsistencia! => local(%d) vs remoto(%d)\n", id, id_res);
+        //     // exit(1);
+        // }
         id++;
     }
 

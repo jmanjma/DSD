@@ -35,8 +35,6 @@ int main(int argc, char *argv[]) {
     cont = 0;
     while(1) {
         msj_recibir = res.getRequest();
-        // memcpy(&reg, (struct registro*)msj_recibir->arguments, sizeof(reg));
-        // printf("%s%s%s\n", reg.celular, reg.CURP, reg.partido);
         realiza_op(msj_recibir, file_destino, name_file, cont, res);
     }
 
@@ -56,18 +54,17 @@ void realiza_op(struct mensaje *msj, int &file_destino, char* name_file, int &co
         }
         printf("\n\t\tBase de datos inicializada.\n");
         cont = aux = 0;
-        res.sendReply((char*)&aux);
-        cont++;
     } else {
-        if (cont==msj->requestId){
+        if (cont+1==msj->requestId){
+            aux = ++cont;
             struct registro reg;
             memcpy(&reg, (struct registro*)msj->arguments, sizeof(reg));
-            // printf("%s%s%s\n", reg.celular, reg.CURP, reg.partido);
             write(file_destino, &reg, sizeof(reg));
-            res.sendReply((char*)&aux);
-            cont++;
         } else {
-            printf("\t\t**Mensaje repetido, accion ignorada.\n");
+            printf("\t\t**Mensaje repetido, id anterior enviado.\n");
+            aux = msj->requestId;
         }
     }
+    
+    res.sendReply((char*)&aux);
 }

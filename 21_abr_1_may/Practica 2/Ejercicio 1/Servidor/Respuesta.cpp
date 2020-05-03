@@ -14,10 +14,8 @@ struct mensaje* Respuesta::getRequest() {
     printf("\n\tDatos recibidos \
             \n\t\tIP: %s \
             \n\t\tPuerto: %d \
-            \n\t\tTipo: %d \
             \n\t\tId: %d \
-            \n\t\tOperacion: %d \
-            \n\t\tMensaje: ", paquete_recibir.obtieneDireccion(), paquete_recibir.obtienePuerto(), msj_recibir->messageType, msj_recibir->requestId, msj_recibir->operationId);
+            \n\t\tMensaje: ", paquete_recibir.obtieneDireccion(), paquete_recibir.obtienePuerto(), msj_recibir->requestId);
     struct registro reg;
     memcpy(&reg, (struct registro*)msj_recibir->arguments, sizeof(reg));
     printf("%s%s%s\n", reg.celular, reg.CURP, reg.partido);
