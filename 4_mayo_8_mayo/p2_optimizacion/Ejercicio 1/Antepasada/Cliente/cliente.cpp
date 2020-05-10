@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
         bzero(argumentos, TAM_MAX_DATA);
         memcpy(argumentos, (char*)&reg, sizeof(char)*TAM_MAX_DATA);
         id_res = sol.doOperation(ip, puerto, 1, id, argumentos, bandera);
-        printf("\t\tlocal(%d) vs remoto(%d)\n", id, id_res);
+        // printf("\t\tlocal(%d) vs remoto(%d)\n", id, id_res);
         if (id_res<id) {
             lseek(file_in, -34, SEEK_CUR);
             bandera = false;
