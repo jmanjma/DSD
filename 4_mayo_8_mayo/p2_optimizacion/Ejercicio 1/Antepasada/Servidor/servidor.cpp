@@ -61,7 +61,7 @@ void realiza_op(struct mensaje *msj, int &file_destino, char* name_file, int &co
             memcpy(&reg, (struct registro*)msj->arguments, sizeof(reg));
             write(file_destino, &reg, sizeof(reg));
         } else {
-            printf("\t\t**Mensaje repetido, id anterior enviado.\n");
+            // printf("\t\t**Mensaje repetido, id anterior enviado.\n");
             aux = msj->requestId;
         }
     }
