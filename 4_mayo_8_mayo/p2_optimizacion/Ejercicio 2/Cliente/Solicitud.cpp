@@ -34,14 +34,14 @@ int Solicitud::doOperation(char *IP, int puerto, int opId, int reqId, char *args
 
     PaqueteDatagrama paquete_enviar((char*)&msj_enviar, sizeof(msj_enviar), IP, puerto), paquete_recibir(sizeof(msj_enviar));
 
-    printf("\n\tDatos enviados \
-            \n\t\tIP: %s \
-            \n\t\tPuerto: %d \
-            \n\t\tId: %d \
-            \n\t\tMensaje: ", paquete_enviar.obtieneDireccion(), paquete_enviar.obtienePuerto(), msj_enviar.requestId);
+    // printf("\n\tDatos enviados \
+    //         \n\t\tIP: %s \
+    //         \n\t\tPuerto: %d \
+    //         \n\t\tId: %d \
+    //         \n\t\tMensaje: ", paquete_enviar.obtieneDireccion(), paquete_enviar.obtienePuerto(), msj_enviar.requestId);
     struct registro reg;
     memcpy(&reg, (struct registro*)msj_enviar.arguments, sizeof(reg));
-    printf("%s%s%s\n", reg.celular, reg.CURP, reg.partido);
+    // printf("%s%s%s\n", reg.celular, reg.CURP, reg.partido);
 
     for (int i=0 ; i<7 ; i++) {
         socketlocal->envia(paquete_enviar);
@@ -50,7 +50,7 @@ int Solicitud::doOperation(char *IP, int puerto, int opId, int reqId, char *args
         if (n>-1) {
             msj_recibir = (struct mensaje*)paquete_recibir.obtieneDatos();
             memcpy(&tid, msj_recibir->arguments, sizeof(struct id_timeval));
-            printf("\t\tRespuesta recibida: %d => %ld:%ld.\n", tid.id, tid.t.tv_sec, tid.t.tv_usec);
+            // printf("\t\tRespuesta recibida: %d => %ld:%ld.\n", tid.id, tid.t.tv_sec, tid.t.tv_usec);
             return tid.id;
         }
     }
