@@ -68,6 +68,20 @@ bool search(struct TrieNode *root, string key)
   
     return (pCrawl != NULL && pCrawl->isEndOfWord); 
 } 
+
+unsigned int count_bytes(struct TrieNode *root) {
+    struct TrieNode *pCrawl = root; 
+    unsigned int index, cont = 0;
+
+    for (int i = 0; i < ALPHABET_SIZE; i++) {
+        if (pCrawl->children[i]) {
+            cont++;
+            cont += count_bytes(pCrawl->children[i]);
+        }
+    }
+
+    return cont;
+}
   
 // Driver 
 int main_trie() 

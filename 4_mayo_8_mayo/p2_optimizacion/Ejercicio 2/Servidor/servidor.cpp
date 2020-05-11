@@ -81,8 +81,10 @@ void realiza_op(struct mensaje *msj, int &file_destino, char* name_file, int &co
                 tid.id = aux;
                 gettimeofday(&tid.t, NULL);
             }
+            if (cont==10000)
+                printf("\n\tBytes ocupados por el arbol: %d.\n", count_bytes(root));
         } else {
-            printf("\t\t**Mensaje repetido, id anterior enviado.\n");
+            // printf("\t\t**Mensaje repetido, id anterior enviado.\n");
             tid.id = 0;
             tid.t.tv_sec = 0;
             tid.t.tv_usec  = 0;

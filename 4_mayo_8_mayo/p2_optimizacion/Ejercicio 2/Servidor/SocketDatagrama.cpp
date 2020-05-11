@@ -39,9 +39,11 @@ int SocketDatagrama::recibeTimeout(PaqueteDatagrama &p, time_t segundos, susecon
 
     if (n < 0) {
         if (errno == EWOULDBLOCK)
-            fprintf(stderr, "\t\t** Tiempo para recepción transcurrido\n");
+        {}
+            // fprintf(stderr, "\t\t** Tiempo para recepción transcurrido\n");
         else
-            fprintf(stderr, "\t\t** Error en recvfrom\n");
+        {}
+            // fprintf(stderr, "\t\t** Error en recvfrom\n");
     } else {
         p.inicializaIp(inet_ntoa(direccionForanea.sin_addr));
         p.inicializaPuerto(ntohs(direccionForanea.sin_port));
