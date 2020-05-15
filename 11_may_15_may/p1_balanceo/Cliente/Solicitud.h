@@ -19,7 +19,7 @@ class Solicitud {
         SocketDatagrama *socketlocal;
     public:
         Solicitud();
-        int doOperation(char *IP, int puerto, int operationId, int requestId, char *argumnts, bool bandera);
+        int doOperation(char *IP, int puerto, int operationId, int requestId, char *argumnts);
 };
 
 #endif

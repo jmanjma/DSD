@@ -36,18 +36,20 @@ int main(int argc, char *argv[]) {
 
     struct id_timeval tid;
 
+    int num_servs = argc-4;
+
     vector<string> servs;
-    servs.reserve(argc-4);
+    servs.reserve(num_servs);
     
     int index = 0;
 
-    for(index=1 ; index<=(argc-4) ;index++ )
+    for(index=1 ; index<=num_servs ;index++ )
         servs.push_back(argv[index]);
 
     int puerto = atoi(argv[index++]);
     char *name_file = argv[index++];
     int n = atoi(argv[index++]);
-    int id_res;
+    int id_res[num_servs];
 
     int file_in, nbytes;
     struct registro reg, reg_last;
@@ -60,32 +62,33 @@ int main(int argc, char *argv[]) {
     printf("\n\tEmitiendo votos...\n");
 
     int id = 0;
-    bool bandera = true;
+    bool bandera = false;
     for (auto it = servs.begin(); it != servs.end(); it++) {
-        // sol.doOperation((*it).c_str(), puerto, 0, id, argumentos, bandera);
+        sol.doOperation((char*)(*it).c_str(), puerto, 0, id, argumentos);
     }
     id++;
     while(id<=n) {
-        read_file(file_in, reg, argumentos);
-        if ((reg.celular[9]-48)>=0 && (reg.celular[9]-48)<5) {
-            printf("%c(%d) - %s\n", reg.celular[9], reg.celular[9]-48, servs[0].c_str());
-        } else {
-            printf("%c(%d) - %s\n", reg.celular[9], reg.celular[9]-48, servs[1].c_str());
+        for (int s=0 ; s<num_servs ; s++) {
+            read_file(file_in, reg, argumentos);
+            if ((reg.celular[9]-48)>=0 && (reg.celular[9]-48)<5) {
+                id_res[0] = sol.doOperation((char*)servs[0].c_str(), puerto, 1, id, argumentos);
+            } else {
+                id_res[1] = sol.doOperation((char*)servs[1].c_str(), puerto, 1, id, argumentos);
+            }
         }
-    //     id_res = sol.doOperation(ip, puerto, 1, id, argumentos, bandera);
-    //     // printf("\t\tlocal(%d) vs remoto(%d)\n", id, id_res);
-    //     if (id_res<id) {
-    //         lseek(file_in, -34, SEEK_CUR);
-    //         bandera = false;
-    //         continue;
-    //     }
-    //     bandera = true;
+        for (int ids=0 ; ids<num_servs ; ids++) {
+            if (id_res[ids]<id) {
+                bandera = true;
+                break;
+            }
+        }
+        if (bandera) {
+            bandera = false;
+            lseek(file_in, -34*(num_servs), SEEK_CUR);
+            continue;
+        }
         id++;
     }
 
     return 0;
 }
-
-Buenas tardes profesor tengo unas dudas con respecto a la práctica de balanceo:
-1. Se puede enviar a cada servido los números en orden consecutivo?
-    Ej. Utilizando n numero de servidores y n numero de hilos: el requestId
