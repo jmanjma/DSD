@@ -14,7 +14,7 @@ using namespace std;
 #include "Respuesta.h"
 #include "trie.h"
 
-void realiza_op(struct mensaje *msj, int &file_destino, char* name_file, int &cont, Respuesta &res, struct TrieNode *root);
+void realiza_op(struct mensaje *msj, int &file_destino, char* name_file, int &cont, Respuesta &res, struct TrieNode *root, struct id_timeval &last);
 void print_celnums(vector<string> &vector);
 
 int main(int argc, char *argv[]) {
@@ -36,6 +36,7 @@ int main(int argc, char *argv[]) {
     char* mensaje;
 
     struct registro reg;
+    struct id_timeval last;
     struct TrieNode *root = getNode(); 
 
     printf("\n\tServidor iniciado\n");
@@ -43,7 +44,7 @@ int main(int argc, char *argv[]) {
     cont = 0;
     while(1) {
         msj_recibir = res.getRequest();
-        realiza_op(msj_recibir, file_destino, name_file, cont, res, root);
+        realiza_op(msj_recibir, file_destino, name_file, cont, res, root, last);
     }
 
     close(file_destino);
@@ -51,7 +52,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-void realiza_op(struct mensaje *msj, int &file_destino, char* name_file, int &cont, Respuesta &res, struct TrieNode *root) {
+void realiza_op(struct mensaje *msj, int &file_destino, char* name_file, int &cont, Respuesta &res, struct TrieNode *root, struct id_timeval &last) {
     int aux = cont;
     struct id_timeval tid;
 
@@ -66,6 +67,7 @@ void realiza_op(struct mensaje *msj, int &file_destino, char* name_file, int &co
         tid.id = 0;
         tid.t.tv_sec = 0;
         tid.t.tv_usec  = 0;
+        memcpy(&last, (struct id_timeval*)&tid, sizeof(tid));
     } else {
         if (cont+1==msj->requestId){
             aux = ++cont;
@@ -79,15 +81,14 @@ void realiza_op(struct mensaje *msj, int &file_destino, char* name_file, int &co
                 insert(root, reg.celular);
                 write(file_destino, &reg, sizeof(reg));
                 tid.id = aux;
+                memcpy(&last, (struct id_timeval*)&tid, sizeof(tid));
                 gettimeofday(&tid.t, NULL);
             }
             if (cont==10000)
                 printf("\n\tBytes ocupados por el arbol: %d.\n", count_bytes(root));
         } else {
-            // printf("\t\t**Mensaje repetido, id anterior enviado.\n");
-            tid.id = 0;
-            tid.t.tv_sec = 0;
-            tid.t.tv_usec  = 0;
+            printf("\t\t**Mensaje repetido, id anterior enviado.\n");
+            memcpy(&tid, (struct id_timeval*)&last, sizeof(tid));
         }
     }
     
