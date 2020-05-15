@@ -81,8 +81,8 @@ void realiza_op(struct mensaje *msj, int &file_destino, char* name_file, int &co
                 insert(root, reg.celular);
                 write(file_destino, &reg, sizeof(reg));
                 tid.id = aux;
-                memcpy(&last, (struct id_timeval*)&tid, sizeof(tid));
                 gettimeofday(&tid.t, NULL);
+                memcpy(&last, (struct id_timeval*)&tid, sizeof(tid));
             }
             if (cont==10000)
                 printf("\n\tBytes ocupados por el arbol: %d.\n", count_bytes(root));
