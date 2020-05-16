@@ -1,5 +1,5 @@
 all: cliente.cpp Solicitud.o SocketDatagrama.o PaqueteDatagrama.o
-	g++ cliente.cpp Solicitud.o SocketDatagrama.o PaqueteDatagrama.o -o cliente
+	g++ -std=c++11 cliente.cpp Solicitud.o SocketDatagrama.o PaqueteDatagrama.o -o cliente -lpthread
 Solicitud.o: Solicitud.cpp Solicitud.h
 	g++ Solicitud.cpp -c
 SocketDatagrama.o: SocketDatagrama.cpp SocketDatagrama.h

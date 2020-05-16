@@ -14,6 +14,12 @@ using namespace std;
 #include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <thread>
+#include <iostream>
+
+void func_hilo(char *IP, int puerto, int opId, int reqId, char *args, int &res, Solicitud &sol) {
+    res = sol.doOperation(IP, puerto, opId, reqId, args);
+}
 
 void read_file(int file_in, struct registro &reg, char *argumentos) {
     int nbytes = read(file_in, (char*)&reg, sizeof(reg));
@@ -32,7 +38,8 @@ int main(int argc, char *argv[]) {
 
     Solicitud sol = Solicitud();
     srand(time(NULL));
-    char* argumentos = new char[TAM_MAX_DATA];
+    char* argumentos1 = new char[TAM_MAX_DATA];
+    char* argumentos2 = new char[TAM_MAX_DATA];
 
     struct id_timeval tid;
 
@@ -64,18 +71,24 @@ int main(int argc, char *argv[]) {
     int id = 0;
     bool bandera = false;
     for (auto it = servs.begin(); it != servs.end(); it++) {
-        sol.doOperation((char*)(*it).c_str(), puerto, 0, id, argumentos);
+        sol.doOperation((char*)(*it).c_str(), puerto, 0, id, argumentos1);
     }
     id++;
     while(id<=n) {
-        for (int s=0 ; s<num_servs ; s++) {
-            read_file(file_in, reg, argumentos);
-            if ((reg.celular[9]-48)>=0 && (reg.celular[9]-48)<5) {
-                id_res[0] = sol.doOperation((char*)servs[0].c_str(), puerto, 1, id, argumentos);
-            } else {
-                id_res[1] = sol.doOperation((char*)servs[1].c_str(), puerto, 1, id, argumentos);
-            }
-        }
+        // for (int s=0 ; s<num_servs ; s++) {
+            read_file(file_in, reg, argumentos1);
+            // if ((reg.celular[9]-48)>=0 && (reg.celular[9]-48)<5) {
+            // if (s==0) {
+                thread serv1(func_hilo, (char*)servs[0].c_str(), puerto, 1, id, argumentos1, ref(id_res[0]), ref(sol));
+                // id_res[0] = sol.doOperation((char*)servs[0].c_str(), puerto, 1, id, argumentos);
+            // } else {
+                read_file(file_in, reg, argumentos2);
+                thread serv2(func_hilo, (char*)servs[1].c_str(), puerto, 1, id, argumentos2, ref(id_res[1]), ref(sol));
+                // id_res[1] = sol.doOperation((char*)servs[1].c_str(), puerto, 1, id, argumentos);
+            // }
+        // }
+        serv1.join();
+        serv2.join();
         for (int ids=0 ; ids<num_servs ; ids++) {
             if (id_res[ids]<id) {
                 bandera = true;
