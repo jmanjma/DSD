@@ -8,7 +8,7 @@ Solicitud::Solicitud() {
     socketlocal = new SocketDatagrama(0);
 }
 
-int Solicitud::doOperation(char *IP, int puerto, int opId, int reqId, char *args, int id_serv) {
+int Solicitud::doOperation(char *IP, int puerto, int opId, int reqId, char *args, int id_serv, int *lamport, int *lamport_remoto) {
     int n;
     struct mensaje msj_enviar, *msj_recibir;
     struct timeval t;
@@ -19,6 +19,7 @@ int Solicitud::doOperation(char *IP, int puerto, int opId, int reqId, char *args
     msj_enviar.id_serv = id_serv;
     bzero(msj_enviar.arguments, TAM_MAX_DATA);
     memcpy(msj_enviar.arguments, args, sizeof(char)*TAM_MAX_DATA);
+    memcpy(&msj_enviar.lamport, lamport, sizeof(int)*NUM_SERVS);
 
     PaqueteDatagrama paquete_enviar((char*)&msj_enviar, sizeof(msj_enviar), IP, puerto), paquete_recibir(sizeof(msj_enviar));
 
@@ -42,6 +43,7 @@ int Solicitud::doOperation(char *IP, int puerto, int opId, int reqId, char *args
             for (int i=0 ; i<NUM_SERVS ; i++)
                 printf(" %d", msj_recibir->lamport[i]);
             printf(" ] %ld:%ld.\n", t.tv_sec, t.tv_usec);
+            memcpy(lamport_remoto, &msj_recibir->lamport, sizeof(int)*NUM_SERVS);
             return msj_recibir->requestId;
         }
     }

@@ -17,6 +17,11 @@ using namespace std;
 #include <thread>
 #include <iostream>
 
+int max(int a, int b);
+void update_lamport(int *lamport_remoto);
+
+int *lamport;
+
 typedef struct Item {
     int id;
     struct registro reg;
@@ -26,11 +31,13 @@ void func_hilo(char *IP, int puerto, Solicitud &sol, vector<item> &regs, int id_
     int res;
     item aux;
     char *argumentos = new char[TAM_MAX_DATA];
+    int *lamport_remoto = new int[NUM_SERVS];
 
     while(!regs.empty()) {
         memcpy(&aux, (item*)&regs[0], sizeof(item));
         memcpy(argumentos, (char*)&aux.reg, sizeof(struct registro));
-        res = sol.doOperation(IP, puerto, 1, aux.id, argumentos, id_serv);
+        res = sol.doOperation(IP, puerto, 1, aux.id, argumentos, id_serv, lamport, lamport_remoto);
+        update_lamport(lamport_remoto); 
         if (res!=aux.id) {
             continue;
         }
@@ -76,7 +83,8 @@ int main(int argc, char *argv[]) {
     int ids[num_servs];
     vector<item> regs[num_servs];
     Solicitud sols[num_servs];
-    int lamport[num_servs];
+    lamport = new int[num_servs];
+    int *lamport_remoto = new int[NUM_SERVS];
     
     for (int index=0 ; index<num_servs ; index++) {
         ids[index] = 0;
@@ -87,7 +95,8 @@ int main(int argc, char *argv[]) {
 
     int i = 0;
     for (auto it = servs.begin(); it != servs.end(); it++) {
-        sol.doOperation((char*)(*it).c_str(), puerto, 0, 0, argumentos, i++);
+        sol.doOperation((char*)(*it).c_str(), puerto, 0, 0, argumentos, i++, lamport, lamport_remoto);
+        update_lamport(lamport_remoto); 
     }
 
     item aux;
@@ -141,4 +150,14 @@ int main(int argc, char *argv[]) {
     // serv3.join();
 
     return 0;
+}
+
+int max(int a, int b) {
+    return (a>b)?a:b;
+}
+
+void update_lamport(int *lamport_remoto) {
+    for (int i=0 ; i<NUM_SERVS ; i++) {
+        lamport[i] = max(lamport[i], lamport_remoto[i]);
+    }
 }
