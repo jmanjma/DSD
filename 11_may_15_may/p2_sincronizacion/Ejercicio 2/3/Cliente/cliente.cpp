@@ -120,7 +120,7 @@ int main(int argc, char *argv[]) {
         if ((reg.celular[9]-48)>=0 && (reg.celular[9]-48)<4) {
             aux.id = ++ids[0];
             regs[0].push_back(aux);
-        } else if ((reg.celular[9]-48)>=4 && (reg.celular[9]-48)<7) {
+        } else if ((reg.celular[9]-48)>=4 && (reg.celular[9]-48)<=7) {
             aux.id = ++ids[1];
             regs[1].push_back(aux);
         } else {

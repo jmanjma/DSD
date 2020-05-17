@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
         if ((reg.celular[9]-48)>=0 && (reg.celular[9]-48)<4) {
             // printf("%d\n", reg.celular[9]-48);
             write(file_out[0], &reg, sizeof(reg));
-        } else if ((reg.celular[9]-48)>=4 && (reg.celular[9]-48)<7) {
+        } else if ((reg.celular[9]-48)>=4 && (reg.celular[9]-48)<=7) {
             // printf("%d\n", reg.celular[9]-48);
             write(file_out[1], &reg, sizeof(reg));
         } else {
