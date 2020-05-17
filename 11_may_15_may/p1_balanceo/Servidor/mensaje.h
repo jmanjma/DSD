@@ -1,7 +1,7 @@
 #ifndef MENSAJE_H_
 #define MENSAJE_H_
 
-#define TAM_MAX_DATA 4000
+#define TAM_MAX_DATA 34
 
 // Definicion de identificadores paraoperaciones permitiddas
 #define suma 1
