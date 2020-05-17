@@ -109,10 +109,10 @@ int main(int argc, char *argv[]) {
             aux.id = ++ids[0];
             regs[0].push_back(aux);
         } else if ((reg.celular[9]-48)>=4 && (reg.celular[9]-48)<7) {
-            aux.id = ids[1]++;
+            aux.id = ++ids[1];
             regs[1].push_back(aux);
         } else {
-            aux.id = ids[2]++;
+            aux.id = ++ids[2];
             regs[2].push_back(aux);
         }
         
