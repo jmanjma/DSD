@@ -15,6 +15,15 @@ static struct mg_serve_http_opts s_http_server_opts;
 
 int num[2], *res;
 
+string calc_time(struct timeval &start, struct timeval &end) {
+	double res;
+
+	res = (end.tv_sec * 1000000) + end.tv_usec;
+	res -= (start.tv_sec * 1000000) + start.tv_usec;
+
+	return std::to_string(res/1000000) + " segundos.<br>";
+}
+
 static void handle_size(struct mg_connection *nc, struct http_message *hm, string resultado) {
 	char query[resultado.length()];
 
@@ -52,16 +61,16 @@ static void ev_handler(struct mg_connection *nc, int ev, void *p) {
             \n\tPuerto: %d \
             \n\tNumeros: %d y %d.\n", paquete_enviar.obtieneDireccion(), paquete_enviar.obtienePuerto(), num[0], num[1]);
 
-			string resultado = "", aux;
+			string resultado = "IP servidor => Latencia<br>", aux;
 			int n;
 			for (int i=0 ; i<2 ; i++) {
-				n = socket_udp.recibeTimeout(paquete_recibir, 1, 0);
+				n = socket_udp.recibeTimeout(paquete_recibir, 2, 0);
 
 				if (n>-1) {
 					gettimeofday(&end, NULL);
 
 					aux = paquete_recibir.obtieneDireccion();
-					resultado += aux + " => " + std::to_string(end.tv_sec-start.tv_sec) + " segundos " + std::to_string(end.tv_usec-start.tv_usec) + " milisegundos.";
+					resultado += aux + " => " + calc_time(start, end);
 
 					res = (int*)paquete_recibir.obtieneDatos();
 					printf("\tRespuesta recibida: %d.\n", *res);
