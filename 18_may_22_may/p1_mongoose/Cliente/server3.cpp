@@ -12,6 +12,7 @@ static struct mg_serve_http_opts s_http_server_opts;
 // Variables de socket cliente /////////////////////////////////////////////////
 #include <stdlib.h>
 #include "SocketDatagrama.h"
+#include "mensaje.h"
 
 int num[2], *res;
 
@@ -63,7 +64,7 @@ static void ev_handler(struct mg_connection *nc, int ev, void *p) {
 
 			string resultado = "IP servidor => Latencia<br>", aux;
 			int n;
-			for (int i=0 ; i<2 ; i++) {
+			for (int i=0 ; i<NUM_SERVS ; i++) {
 				n = socket_udp.recibeTimeout(paquete_recibir, 2, 0);
 
 				if (n>-1) {
