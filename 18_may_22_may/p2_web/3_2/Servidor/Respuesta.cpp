@@ -36,7 +36,7 @@ void Respuesta::sendReply(char* respuesta, int cont, struct mensaje *msj) {
     PaqueteDatagrama paquete_enviar(sizeof(msj_enviar));
     paquete_enviar.inicializaDatos((char*)&msj_enviar);
 
-    sleep(2);
+    //sleep(2);
 
     socketlocal->envia(paquete_enviar);
 
