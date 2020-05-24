@@ -12,23 +12,23 @@ $(document).ready(function() {
 		
   // Initialize graph
 
-updateGraph(function(string1, string2, string3, value1, value2, value3){
-const ctx = document.getElementById('chart').getContext('2d');
-	label1 = string1;
-	label2 = string2;
-	label3 = string3;
-	value1 = num1;
-	value2 = num2;
-	value3 = num3;
+updateGraph('hola', 'hola2', 'hola3', 17, 18, 19);
 
+function updateGraph(string1, string2, string3, value1, value2, value3){
+const ctx = document.getElementById('chart').getContext('2d');
+	var label1 = string1;
+	var label2 = string2;
+	var label3 = string3;
+	var num1 = value1;
+	var num2 = value2;
+	var num3 = value3;
 const myChart = new Chart(ctx, {
     type: 'bar',
     data: {
-        //labels: xlabels,
         labels: [label1, label2, label3],
         datasets: [{
             label: '# of Votes',
-            data: [num1,num2,num3],
+            data: [num1, num2, num3],
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
@@ -52,6 +52,7 @@ const myChart = new Chart(ctx, {
         }
     }
 });
+	return myChart;
 
 }
 	    
