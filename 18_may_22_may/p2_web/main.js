@@ -4,29 +4,31 @@ $(document).ready(function() {
     $.ajax({
       url: '/get_cpu_usage',
       dataType: 'json',
-     // data: {Server1: $('server1_new').text(), Server2: $('server2_new').text(), Server3: $('#server3_new').text()},
-     // data: {votos1: $('#votos1_new').val(), votos2: $('#votos2_new').val(), votos3: $('#votos3_new').val()},
-    //data: {"Server 1": serv1, "Server 2": serv2, "Server 3": serv3, votos1: 3, votos2: vot2, votos3: vot3 },
-      success: function(json) {
-        $('#cpu_usage').text(json.result + '% ');
+ success: function(json) {
+        $('#cpu_usage').text(json.result + '% ')	
       }
     });
   }, 1000);
-
-	//xlabels.push(servers);
-
+		
   // Initialize graph
 
+updateGraph(function(string1, string2, string3, value1, value2, value3){
 const ctx = document.getElementById('chart').getContext('2d');
-//const xlabels = [];
+	label1 = string1;
+	label2 = string2;
+	label3 = string3;
+	value1 = num1;
+	value2 = num2;
+	value3 = num3;
+
 const myChart = new Chart(ctx, {
     type: 'bar',
     data: {
         //labels: xlabels,
-        labels: ['Server 1', 'Server 2', 'Server 3'],
+        labels: [label1, label2, label3],
         datasets: [{
             label: '# of Votes',
-            data: [12,19, 13],
+            data: [num1,num2,num3],
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
@@ -51,7 +53,6 @@ const myChart = new Chart(ctx, {
     }
 });
 
-
-
-    
+}
+	    
 });
