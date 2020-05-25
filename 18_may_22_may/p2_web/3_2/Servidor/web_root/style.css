@@ -85,3 +85,8 @@ a:link, a:visited {
   font-weight: bold;
   z-index: 999;
 }
+
+canvas {
+  width: 20px;
+  height: 20px;
+}

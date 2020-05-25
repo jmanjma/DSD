@@ -5,9 +5,13 @@ $(document).ready(function() {
       url: '/get_cpu_usage',
       dataType: 'json',
         success: function(json) {
-            // var parent = document.getElementById('graphs');
-            // parent.innerHTML += "<h2>" + JSON.stringify(json) + "</h2><br>";
-            $('#cpu_usage').text(Object.values(json).reduce((a, b) => a + b, 0));
+            var parent = document.getElementById('graphs');
+            var cadena = "Votos procesados: " + Object.values(json).reduce((a, b) => a + b, 0) + "<br>" ;
+            Object.keys(json).forEach(key => {
+                cadena += key + ": " + json[key] + "<br>";
+            });
+            // $('#cpu_usage').text(cadena);
+            parent.innerHTML = cadena;
             // $('#cpu_usage').text(JSON.stringify(json));
                 updateGraph(json);
             }
@@ -37,6 +41,9 @@ function updateGraph(json){
             }]
         },
         options: {
+            animation: {
+                duration: 0
+            },
             scales: {
                 yAxes: [{
                     ticks: {
